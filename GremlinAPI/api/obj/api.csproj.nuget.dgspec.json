@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\LeonE\\Desktop\\GitHub\\ITPE3200-1-26H-API\\gremlinAPI\\api\\api.csproj": {}
+    "C:\\Users\\LeonE\\Desktop\\GitHub\\ITPE3200-1-26H-API\\GremlinAPI\\api\\api.csproj": {}
   },
   "projects": {
-    "C:\\Users\\LeonE\\Desktop\\GitHub\\ITPE3200-1-26H-API\\gremlinAPI\\api\\api.csproj": {
+    "C:\\Users\\LeonE\\Desktop\\GitHub\\ITPE3200-1-26H-API\\GremlinAPI\\api\\api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\LeonE\\Desktop\\GitHub\\ITPE3200-1-26H-API\\gremlinAPI\\api\\api.csproj",
+        "projectUniqueName": "C:\\Users\\LeonE\\Desktop\\GitHub\\ITPE3200-1-26H-API\\GremlinAPI\\api\\api.csproj",
         "projectName": "api",
-        "projectPath": "C:\\Users\\LeonE\\Desktop\\GitHub\\ITPE3200-1-26H-API\\gremlinAPI\\api\\api.csproj",
+        "projectPath": "C:\\Users\\LeonE\\Desktop\\GitHub\\ITPE3200-1-26H-API\\GremlinAPI\\api\\api.csproj",
         "packagesPath": "C:\\Users\\LeonE\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\LeonE\\Desktop\\GitHub\\ITPE3200-1-26H-API\\gremlinAPI\\api\\obj\\",
+        "outputPath": "C:\\Users\\LeonE\\Desktop\\GitHub\\ITPE3200-1-26H-API\\GremlinAPI\\api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\LeonE\\AppData\\Roaming\\NuGet\\NuGet.Config"
