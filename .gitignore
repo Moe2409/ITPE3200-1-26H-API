@@ -48,5 +48,4 @@ dist-ssr
 *.sln
 *.sw?
 
-api/bin/
-api/obj/
+bin/*
