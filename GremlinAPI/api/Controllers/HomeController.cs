@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Gremlin.Models;
+using Gremlin.DAL;
 
 namespace Gremlin.Controllers;
 

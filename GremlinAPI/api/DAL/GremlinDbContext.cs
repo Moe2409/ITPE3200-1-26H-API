@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Gremlin.Models;
 
-namespace Gremlin.Models;
+namespace Gremlin.DAL;
 
 
 public class GremlinDbContext : DbContext
