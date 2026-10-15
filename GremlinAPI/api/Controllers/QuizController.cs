@@ -45,6 +45,14 @@ public class QuizAPIController : ControllerBase
         {
             id = quiz.id,
             title = quiz.title,
+            user = quiz.User,
+            Questions = quiz.Questions.Select(q => new Gremlin.DTOs.Question
+                {
+                    id = q.id,
+                    title = q.title,
+                    AnswerAlternatives = q.AnswerAlternatives,
+                    CorrectAnswerIndices = q.CorrectAnswerIndices
+                }).ToList()
         });        
         return Ok(quizDtos);
     }

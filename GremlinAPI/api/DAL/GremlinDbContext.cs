@@ -5,8 +5,7 @@ using Gremlin.Models;
 
 namespace Gremlin.DAL;
 
-
-public class GremlinDbContext : DbContext
+public class GremlinDbContext : IdentityDbContext<IdentityUser>
 {
     public GremlinDbContext(DbContextOptions<GremlinDbContext> options) : base(options)
     {

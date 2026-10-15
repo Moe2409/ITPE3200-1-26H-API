@@ -22,66 +22,66 @@ public static class DBInit
         context.Database.EnsureDeleted();
         context.Database.EnsureCreated();
 
-        // if (!context.Users.Any())
-        // {
-        //     // List with users and their passwords
-        //     var usersWithPasswords = new List<(IdentityUser User, string Password)>
-        //     {
-        //         (
-        //             new IdentityUser
-        //             {
-        //                 Email = "harry.potter@hogwarts.co.uk",
-        //                 UserName = "Harry_potter",
-        //                 EmailConfirmed = true
-        //             },
-        //             "Password123!"
-        //         ),
-        //         (
-        //             new IdentityUser
-        //             {
-        //                 Email = "J.L.Picard@ufp.org",
-        //                 UserName = "Jean_Luc_Picard",
-        //                 EmailConfirmed = true
-        //             },
-        //             "Password123!"
-        //         )
-        //     };  
+        if (!context.Users.Any())
+        {
+            // List with users and their passwords
+            var usersWithPasswords = new List<(IdentityUser User, string Password)>
+            {
+                (
+                    new IdentityUser
+                    {
+                        Email = "harry.potter@hogwarts.co.uk",
+                        UserName = "Harry_potter",
+                        EmailConfirmed = true
+                    },
+                    "Password123!"
+                ),
+                (
+                    new IdentityUser
+                    {
+                        Email = "J.L.Picard@ufp.org",
+                        UserName = "Jean_Luc_Picard",
+                        EmailConfirmed = true
+                    },
+                    "Password123!"
+                )
+            };  
 
-        //     // Loop to create each user using UserManager, which handles password-hashing
-        //     foreach (var (user, password) in usersWithPasswords)
-        //     {
-        //         var result = userManager.CreateAsync(user, password).GetAwaiter().GetResult();
-        //         if (!result.Succeeded)
-        //         {
-        //             var errors = string.Join(", ", result.Errors.Select(e => e.Description));
-        //             throw new Exception($"Failed to seed user '{user.UserName}': {errors}");
-        //         }
-        //     }
-        // }
+            // Loop to create each user using UserManager, which handles password-hashing
+            foreach (var (user, password) in usersWithPasswords)
+            {
+                var result = userManager.CreateAsync(user, password).GetAwaiter().GetResult();
+                if (!result.Succeeded)
+                {
+                    var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                    throw new Exception($"Failed to seed user '{user.UserName}': {errors}");
+                }
+            }
+        }
 
-        // // Getting the first and last user from the database to connect quizzes 
-        // var defaultUser = context.Users.OrderBy(u => u.Id).First();
-        // var defaultUser2 = context.Users.OrderBy(u => u.Id).Last();
+        // Getting the first and last user from the database to connect quizzes 
+        var defaultUser = context.Users.OrderBy(u => u.Id).First();
+        var defaultUser2 = context.Users.OrderBy(u => u.Id).Last();
 
         // Creating test quizzes
-        // if (!context.Quizzes.Any())
-        // {
-        //     var quizzes = new List<Quiz>
-        //     {
-        //         new Quiz
-        //         {
-        //             title = "HarryPotterFood",
-        //             user_id = defaultUser.Id
-        //         },
-        //         new Quiz
-        //         {
-        //             title = "Hamburger",
-        //             user_id = defaultUser2.Id
-        //         }
-        //     };
-        //     context.Quizzes.AddRange(quizzes);
-        //     context.SaveChanges();
-        // }
+        if (!context.Quizzes.Any())
+        {
+            var quizzes = new List<Quiz>
+            {
+                new Quiz
+                {
+                    title = "HarryPotterFood",
+                    user_id = defaultUser.Id
+                },
+                new Quiz
+                {
+                    title = "Hamburger",
+                    user_id = defaultUser2.Id
+                }
+            };
+            context.Quizzes.AddRange(quizzes);
+            context.SaveChanges();
+        }
 
         // Create a set of sample questions for the sample quiz
         if (!context.Questions.Any())
