@@ -11,7 +11,7 @@ namespace Gremlin.Controllers;
 
 //handles quiz related operations like liting, viewing, taking, submitting and creating quizzes 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/quiz")]
 public class QuizAPIController : ControllerBase
 {   
     private readonly IQuizRepository _quizRepository;

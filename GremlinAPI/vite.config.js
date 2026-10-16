@@ -7,4 +7,7 @@ export default defineConfig({
   resolve: {
     dedupe: ['react', 'react-dom'],
   },
+  server: {
+    port: 4000, // Forces Vite to run on http://localhost:4000
+  },
 })

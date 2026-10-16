@@ -1,7 +1,7 @@
 // import React from 'react';
 import { Nav, Navbar, NavDropdown } from 'react-bootstrap';
 
-const NavMenu = () => {
+export default function NavMenu() {
   return (
     <Navbar expand="lg">
       <Navbar.Brand href="/">MyShop</Navbar.Brand>
@@ -27,4 +27,3 @@ const NavMenu = () => {
   );
 };
 
-export default NavMenu;
