@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Table } from 'react-bootstrap';
 import React from 'react';
-import QuizTable from './QuizTable'
+import QuizTable from './QuizTable';
 import { Quiz } from '../types/quiz';
 
 const API_URL = import.meta.env.VITE_API_URL;
