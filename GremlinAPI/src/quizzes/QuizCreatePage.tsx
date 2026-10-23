@@ -24,8 +24,8 @@ export default function QuizCreatePage() {
   const mutation = useMutation({
     mutationFn: createQuiz,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['Quizs'] });
-      navigate('/Quizs'); // go to the QuizListPage
+      queryClient.invalidateQueries({ queryKey: ['Quizzes'] });
+      navigate('/Quizzes'); // go to the QuizListPage
     },
   });
 

@@ -5,7 +5,7 @@ import { Quiz } from '../types/quiz';
 const API_URL = import.meta.env.VITE_API_URL;
 
 async function fetchQuiz(id: string): Promise<Quiz> {
-  const response = await fetch(`${API_URL}/api/Quizapi/${id}`);
+  const response = await fetch(`${API_URL}/api/quiz/${id}`);
   if (!response.ok) {
     throw new Error('Failed to fetch Quiz');
   }
@@ -13,7 +13,7 @@ async function fetchQuiz(id: string): Promise<Quiz> {
 }
 
 async function updateQuiz(Quiz: Quiz): Promise<Quiz> {
-  const response = await fetch(`${API_URL}/api/Quizapi/update/${Quiz.id}`, {
+  const response = await fetch(`${API_URL}/api/quiz/${Quiz.id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(Quiz),
@@ -38,8 +38,8 @@ export default function QuizUpdatePage() {
   const mutation = useMutation({
     mutationFn: updateQuiz,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['Quizs'] });
-      navigate('/Quizs');
+      queryClient.invalidateQueries({ queryKey: ['Quizzes'] });
+      navigate('/Quizzes');
     },
   });
 

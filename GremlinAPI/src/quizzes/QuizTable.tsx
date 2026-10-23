@@ -1,12 +1,13 @@
-import { Table } from 'react-bootstrap';
+import { Button, Table } from 'react-bootstrap';
 import { Quiz } from '../types/quiz';
 import { Link } from 'react-router-dom';
 
 interface QuizTableProps {
     quizzes: Quiz[];
+    onQuizDeleted: (quizId: number) => void;
 }
 
-export default function  QuizTable({ quizzes }: QuizTableProps) {
+export default function  QuizTable({ quizzes, onQuizDeleted }: QuizTableProps) {
 
 return (
     <div className="card shadow-sm border-0 rounded-4 overflow-hidden">
@@ -53,8 +54,13 @@ return (
                                         Take Quiz
                                     </a>
                                 </td>
-                                <td className="text-center">
-                                    <Link to={`/quizupdate/${quiz.id}`}>Update</Link> 
+                                <td className="text-center position-relative" style={{zIndex: '2'}}>
+                                    <Link to={`/quizupdate/${quiz.id}`}>Update</Link>
+                                    <Button 
+                                        onClick={() => onQuizDeleted(quiz.id)}
+                                        variant="link"
+                                        className="text-danger"
+                                    >Delete</Button>  
                                 </td>
                             </tr>
                         ))}
