@@ -1,5 +1,6 @@
 import { Table } from 'react-bootstrap';
 import { Quiz } from '../types/quiz';
+import { Link } from 'react-router-dom';
 
 interface QuizTableProps {
     quizzes: Quiz[];
@@ -17,6 +18,7 @@ return (
                             <th scope="col" className="py-3">Author</th>
                             <th scope="col" className="py-3 text-center">Questions</th>
                             <th scope="col" className="py-3 text-end pe-4">Actions</th>
+                            <th scope="col" className="py-3 text-end pe-4">Update</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -50,6 +52,9 @@ return (
                                        className="btn btn-sm btn-outline-primary px-4 rounded-pill fw-semibold">
                                         Take Quiz
                                     </a>
+                                </td>
+                                <td className="text-center">
+                                    <Link to={`/quizupdate/${quiz.id}`}>Update</Link> 
                                 </td>
                             </tr>
                         ))}

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Gremlin.DTOs;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace Gremlin.Controllers;
 
@@ -18,7 +19,6 @@ public class QuizAPIController : ControllerBase
     private readonly ILogger<QuizAPIController> _logger;
     private readonly GremlinDbContext _gremlinDbContext;
     private readonly UserManager<IdentityUser> _userManager;
-
 
     public QuizAPIController(
         GremlinDbContext gremlinDbContext, 
@@ -33,7 +33,7 @@ public class QuizAPIController : ControllerBase
     }
 
    [HttpGet("all")]
-    public async Task<IActionResult> ItemList()
+    public async Task<IActionResult> QuizList()
     {
         var quizzes = await _quizRepository.GetAll();
         if (quizzes == null)
@@ -56,5 +56,86 @@ public class QuizAPIController : ControllerBase
         });        
         return Ok(quizDtos);
     }
-    
+
+    [HttpPost("create")]
+    public async Task<IActionResult> Create ([FromBody] Gremlin.DTOs.Quiz quizDto)
+    {
+        if (quizDto == null)
+        {
+            return BadRequest("Quiz cannot be null");
+        }
+        var newQuiz = new Gremlin.Models.Quiz
+        {
+            title = quizDto.title, 
+            User = quizDto.user,
+            Questions = quizDto.Questions.Select(q => new Gremlin.Models.Question
+                {
+                    id = q.id,
+                    quiz_id = q.quiz_id,
+                    type_id = q.type_id,
+                    title = q.title,
+
+                    AnswerAlternatives = new List<string>(q.AnswerAlternatives),
+                    CorrectAnswerIndices = new List<int>(q.CorrectAnswerIndices)
+                }).ToList(),
+        };
+        bool returnOk = await _quizRepository.Create(newQuiz);
+        if (returnOk)
+            return CreatedAtAction(nameof(QuizList), new { id = newQuiz.id}, newQuiz);
+        
+        _logger.LogWarning("[QuizApiController] Quiz creation failed {@item}", newQuiz);
+        return StatusCode(500, "Internal server error");
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, [FromBody] Gremlin.DTOs.Quiz quizDto)
+    {
+        if (quizDto == null || id != quizDto.id)
+        {
+            return BadRequest("Quiz ID mismatch or quiz data is null.");
+        }
+
+        // Check if the quiz exists first
+        var existingQuiz = await _quizRepository.GetItemById(id);
+        if (existingQuiz == null)
+        {
+            _logger.LogWarning("[QuizAPIController] Quiz with ID {Id} not found for update", id);
+            return NotFound($"Quiz with ID {id} not found.");
+        }
+
+        // Map updated values
+        existingQuiz.title = quizDto.title;
+        existingQuiz.User = quizDto.user;
+        existingQuiz.Questions = quizDto.Questions.Select(q => new Gremlin.Models.Question
+        {
+            id = q.id,
+            quiz_id = id,
+            type_id = q.type_id,
+            title = q.title,
+            AnswerAlternatives = new List<string>(q.AnswerAlternatives),
+            CorrectAnswerIndices = new List<int>(q.CorrectAnswerIndices)
+        }).ToList();
+
+        bool success = await _quizRepository.Update(existingQuiz);
+        if (success)
+        {
+            return NoContent();
+        }
+
+        _logger.LogWarning("[QuizAPIController] Quiz update failed for ID {Id}", id);
+        return StatusCode(500, "Internal server error");
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        bool success = await _quizRepository.Delete(id);
+        if (!success)
+        {
+            _logger.LogWarning("[QuizAPIController] Quiz deletion failed for ID {Id} (Not found or error)", id);
+            return NotFound($"Quiz with ID {id} not found.");
+        }
+
+        return NoContent();
+    }
 }

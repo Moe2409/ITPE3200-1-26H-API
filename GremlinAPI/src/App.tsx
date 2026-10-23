@@ -4,6 +4,8 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import Container from 'react-bootstrap/Container'
 import HomePage from './home/HomePage'
 import QuizListPage from './quizzes/QuizListPage'
+import QuizCreatePage from './quizzes/QuizCreatePage'
+import QuizUpdatePage from './quizzes/QuizUpdatePage'
 import NavMenu from './shared/NavMenu'
 import './App.css'
 
@@ -19,6 +21,8 @@ export default function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/items" element={<QuizListPage />} />
+              <Route path="/quizcreate" element={<QuizCreatePage />} />
+              <Route path="/quizupdate" element={<QuizUpdatePage />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </Router>
