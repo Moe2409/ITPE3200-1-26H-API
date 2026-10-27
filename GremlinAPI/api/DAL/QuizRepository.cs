@@ -35,7 +35,10 @@ public class QuizRepository : IQuizRepository
     {
         try
         {
-            return await _db.Quizzes.FindAsync(id);
+            return await _db.Quizzes
+            .Include(q => q.User)
+            .Include(q => q.Questions)
+            .FirstOrDefaultAsync(q => q.id == id);
         }
         catch (Exception e)
         {

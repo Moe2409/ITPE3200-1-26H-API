@@ -51,6 +51,7 @@ export default function QuizUpdatePage() {
     <div>
       <h2>Update Quiz</h2>
       <QuizForm
+        key={QuizQuery.data?.id ?? 'loading'}
         onQuizChanged={(Quiz) => mutation.mutateAsync(Quiz)}
         id={QuizQuery.data.id}
         initialValues={QuizQuery.data}

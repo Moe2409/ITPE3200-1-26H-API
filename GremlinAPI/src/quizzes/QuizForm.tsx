@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Form, Button, Alert, Card } from 'react-bootstrap';
 import { Quiz, Question, IdentityUser } from '../types/quiz';
+
 
 interface QuizFormProps {
   onQuizChanged: (newItem: Quiz) => Promise<unknown> | void;
@@ -24,6 +25,16 @@ export default function QuizForm({ onQuizChanged, id, initialValues}: QuizFormPr
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState<boolean>(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (initialValues) {
+      setTitle(initialValues.title ?? '');
+      setUser(initialValues.user);
+      if (initialValues.questions && initialValues.questions.length > 0) {
+        setQuestions(initialValues.questions);
+      }
+    }
+  }, [initialValues]);
 
   const onCancel = () => {
     navigate(-1); // Navigate back one step in history
@@ -265,7 +276,7 @@ export default function QuizForm({ onQuizChanged, id, initialValues}: QuizFormPr
                   size="lg"
                   disabled={submitting}
                 >
-                  {submitting ? 'Saving...' : 'Save Quiz'}
+                  {submitting ? 'Saving...' : initialValues?.title ? 'Update Quiz' : 'Save Quiz'}
                 </Button>
               </div>
             </div>

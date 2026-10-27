@@ -10,6 +10,7 @@ export default function NavMenu() {
         <Nav className="me-auto">
           <Nav.Link href="/">Home</Nav.Link>
           <Nav.Link href="/items">Items</Nav.Link>
+          
           <NavDropdown title="Dropdown" id="basic-nav-dropdown">
             <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
             <NavDropdown.Item href="#action/3.2">
@@ -21,6 +22,10 @@ export default function NavMenu() {
               Separated link
             </NavDropdown.Item>
           </NavDropdown>  
+        </Nav>
+        {/* Right-aligned profile link */}
+        <Nav>
+          <Nav.Link href="/profile">My Profile</Nav.Link>
         </Nav>
       </Navbar.Collapse>
   </Navbar>

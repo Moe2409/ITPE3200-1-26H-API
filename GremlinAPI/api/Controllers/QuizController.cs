@@ -135,16 +135,39 @@ public class QuizAPIController : ControllerBase
 
         // Map updated values
         existingQuiz.title = quizDto.title;
-        existingQuiz.User = quizDto.user;
-        existingQuiz.Questions = quizDto.Questions.Select(q => new Gremlin.Models.Question
+        var incomingIds = quizDto.Questions.Select(q => q.id).ToList();
+
+        var questionsToRemove = existingQuiz.Questions.Where(q => !incomingIds.Contains(q.id)).ToList();
+        foreach (var q in questionsToRemove)
         {
-            id = q.id,
-            quiz_id = id,
-            type_id = q.type_id,
-            title = q.title,
-            AnswerAlternatives = new List<string>(q.AnswerAlternatives),
-            CorrectAnswerIndices = new List<int>(q.CorrectAnswerIndices)
-        }).ToList();
+            existingQuiz.Questions.Remove(q);
+            _gremlinDbContext.Questions.Remove(q);
+        }
+
+        foreach (var qDto in quizDto.Questions)
+        {
+            var existingQuestion = existingQuiz.Questions.FirstOrDefault(q => q.id == qDto.id);
+            if (existingQuestion != null)
+            {
+                // Update properties of the already-tracked question in-place
+                existingQuestion.type_id = qDto.type_id;
+                existingQuestion.title = qDto.title;
+                existingQuestion.AnswerAlternatives = new List<string>(qDto.AnswerAlternatives);
+                existingQuestion.CorrectAnswerIndices = new List<int>(qDto.CorrectAnswerIndices);
+            }
+            else
+            {
+                // Add a brand new question to the tracked collection
+                existingQuiz.Questions.Add(new Gremlin.Models.Question
+                {
+                    quiz_id = id,
+                    type_id = qDto.type_id,
+                    title = qDto.title,
+                    AnswerAlternatives = new List<string>(qDto.AnswerAlternatives),
+                    CorrectAnswerIndices = new List<int>(qDto.CorrectAnswerIndices)
+                });
+            }
+        }
 
         bool success = await _quizRepository.Update(existingQuiz);
         if (success)

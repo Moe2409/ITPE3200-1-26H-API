@@ -6,12 +6,20 @@ import HomePage from './home/HomePage'
 import QuizListPage from './quizzes/QuizListPage'
 import QuizCreatePage from './quizzes/QuizCreatePage'
 import QuizUpdatePage from './quizzes/QuizUpdatePage'
+import ProfilePage from './user/ProfilePage'
 import NavMenu from './shared/NavMenu'
 import './App.css'
 
 const queryClient = new QueryClient()
 
+
+
+
 export default function App() {
+
+  // Define currentUsername here so it's in scope
+  // (Replace "your-username" with the username string you use when creating quizzes)
+  const currentUsername = "UserName";
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -22,8 +30,10 @@ export default function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/items" element={<QuizListPage />} />
               <Route path="/quizcreate" element={<QuizCreatePage />} />
-              <Route path={"/quizupdate/:id"} element={<QuizUpdatePage />} />
+              <Route path="/quizupdate/:id" element={<QuizUpdatePage />} />
+              <Route path="/profile" element={<ProfilePage currentUsername={currentUsername} />} />
               <Route path="*" element={<Navigate to="/" replace />} />
+              
             </Routes>
         </Router>
     </Container>
