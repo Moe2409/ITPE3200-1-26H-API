@@ -22,7 +22,7 @@ export default function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/items" element={<QuizListPage />} />
               <Route path="/quizcreate" element={<QuizCreatePage />} />
-              <Route path="/quizupdate" element={<QuizUpdatePage />} />
+              <Route path={"/quizupdate/:id"} element={<QuizUpdatePage />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </Router>

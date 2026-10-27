@@ -57,6 +57,36 @@ public class QuizAPIController : ControllerBase
         return Ok(quizDtos);
     }
 
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var quiz = await _quizRepository.GetItemById(id);
+        if (quiz == null)
+        {
+            _logger.LogWarning("[QuizAPIController] Quiz with ID {Id} not found", id);
+            return NotFound($"Quiz with ID {id} not found.");
+        }
+
+        var quizDto = new Gremlin.DTOs.Quiz
+        {
+            id = quiz.id,
+            title = quiz.title,
+            user = quiz.User,
+            Questions = quiz.Questions.Select(q => new Gremlin.DTOs.Question
+            {
+                id = q.id,
+                quiz_id = q.quiz_id,
+                type_id = q.type_id,
+                title = q.title,
+                AnswerAlternatives = q.AnswerAlternatives,
+                CorrectAnswerIndices = q.CorrectAnswerIndices
+            }).ToList()
+        };
+
+        return Ok(quizDto);
+    }
+    
     [HttpPost("create")]
     public async Task<IActionResult> Create ([FromBody] Gremlin.DTOs.Quiz quizDto)
     {
@@ -119,14 +149,15 @@ public class QuizAPIController : ControllerBase
         bool success = await _quizRepository.Update(existingQuiz);
         if (success)
         {
-            return NoContent();
+            _logger.LogWarning("[QuizAPIController] Quiz with ID {Id} updated successfully", id);
+            return Ok(existingQuiz);
         }
 
         _logger.LogWarning("[QuizAPIController] Quiz update failed for ID {Id}", id);
         return StatusCode(500, "Internal server error");
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("delete/{id}")]
     public async Task<IActionResult> Delete(int id)
     {
         bool success = await _quizRepository.Delete(id);
