@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
+using Gremlin.Models;
 
 namespace Gremlin.DTOs;
 
@@ -8,7 +9,7 @@ public class Quiz
 {
     
     public int id {get; set;}
-    public IdentityUser? user {get; set;}
+    public AuthUser? user {get; set;}
     
     public string? title {get; set;}
 

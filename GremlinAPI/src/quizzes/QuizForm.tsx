@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Form, Button, Alert, Card } from 'react-bootstrap';
-import { Quiz, Question, IdentityUser } from '../types/quiz';
-
+import { Quiz, Question, AuthUser } from '../types/quiz';
 
 interface QuizFormProps {
   onQuizChanged: (newItem: Quiz) => Promise<unknown> | void;
@@ -14,7 +13,7 @@ interface QuizFormProps {
 
 export default function QuizForm({ onQuizChanged, id, initialValues}: QuizFormProps) {
   const [title, setTitle] = useState<string>(initialValues?.title ?? '');
-  const [user, setUser] = useState<IdentityUser | null | undefined>(initialValues?.user);
+  const [user, setUser] = useState<AuthUser | null | undefined>(initialValues?.user);
   
   // Initialize with at least one question containing two default options if none exist
   const initialQuestions = initialValues?.questions && initialValues.questions.length > 0

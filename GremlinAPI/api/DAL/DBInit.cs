@@ -15,7 +15,7 @@ public static class DBInit
 
         // Getting database context and UserManager from ServiceProvider
         var context = services.GetRequiredService<GremlinDbContext>();
-        var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+        var userManager = services.GetRequiredService<UserManager<AuthUser>>();
 
         // Deleting and creating the database each time the application runs 
         // Good for testing and development phase
@@ -25,10 +25,10 @@ public static class DBInit
         if (!context.Users.Any())
         {
             // List with users and their passwords
-            var usersWithPasswords = new List<(IdentityUser User, string Password)>
+            var usersWithPasswords = new List<(AuthUser User, string Password)>
             {
                 (
-                    new IdentityUser
+                    new AuthUser
                     {
                         Email = "harry.potter@hogwarts.co.uk",
                         UserName = "Harry_potter",
@@ -37,7 +37,7 @@ public static class DBInit
                     "Password123!"
                 ),
                 (
-                    new IdentityUser
+                    new AuthUser
                     {
                         Email = "J.L.Picard@ufp.org",
                         UserName = "Jean_Luc_Picard",

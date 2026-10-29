@@ -12,6 +12,6 @@ public class History
     public int? maxPossibleScore {get; set;}
 
     // Navigation properties
-    public IdentityUser? User { get; set; }
+    public AuthUser? User { get; set; }
     public Quiz? Quiz { get; set; }
 }

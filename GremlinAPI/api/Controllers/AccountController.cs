@@ -16,15 +16,15 @@ namespace Gremlin.Controllers;
 [Route("account")]
 public class AccountController : Controller
 {
-    private readonly UserManager<IdentityUser> _userManager;
-    private readonly SignInManager<IdentityUser> _signInManager;
+    private readonly UserManager<AuthUser> _userManager;
+    private readonly SignInManager<AuthUser> _signInManager;
     private readonly GremlinDbContext _context;
     private readonly ILogger<AccountController> _logger;
 
     
     public AccountController(
-        UserManager<IdentityUser> userManager, 
-        SignInManager<IdentityUser> signInManager, 
+        UserManager<AuthUser> userManager, 
+        SignInManager<AuthUser> signInManager, 
         GremlinDbContext context, 
         ILogger<AccountController> logger)
     {
@@ -53,7 +53,7 @@ public class AccountController : Controller
 
         try
         {
-            var user = new IdentityUser { UserName = model.UserName, Email = model.Email };
+            var user = new AuthUser { UserName = model.UserName, Email = model.Email };
             var result = await _userManager.CreateAsync(user, model.Password);
 
             if (result.Succeeded)

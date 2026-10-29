@@ -3,44 +3,72 @@ using Gremlin.DAL;
 using Scalar.AspNetCore;
 using Serilog;
 using Serilog.Events;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using Microsoft.AspNetCore.Identity;
+using Gremlin.Models;
+using System.IdentityModel.Tokens.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers().AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.ReferenceHandler = // Prevents circular reference exceptions
-            System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
-    });
+{
+    options.JsonSerializerOptions.ReferenceHandler = 
+        System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+});
 
-builder.Services.AddOpenApi(); // 2. Native .NET OpenAPI Support
+builder.Services.AddOpenApi(); 
 
 builder.Services.AddDbContext<GremlinDbContext>(options =>
 {
     options.UseSqlite(builder.Configuration.GetConnectionString("GremlinDbContextConnection"));
 });
 
-builder.Services.AddCors(options => // CORS Policy for React Frontend Integration
+// Single, correct Identity registration
+builder.Services.AddIdentity<AuthUser, IdentityRole>(options =>
 {
-    options.AddPolicy("CorsPolicy", policy =>
-        policy.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost") // Allows any port on localhost
-              .AllowAnyMethod().AllowAnyHeader().AllowCredentials());
-});
-
-builder.Services.AddScoped<IQuizRepository, QuizRepository>();
-
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
-{
-    // Optional password/signin settings if you need them:
     options.Password.RequireDigit = false;
     options.Password.RequiredLength = 6;
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequireUppercase = false;
 })
-.AddEntityFrameworkStores<GremlinDbContext>()
-.AddDefaultTokenProviders();
+    .AddEntityFrameworkStores<GremlinDbContext>()
+    .AddDefaultTokenProviders();
 
-// builder.Services.AddScoped<IItemRepository, GremlinRepository>();
+builder.Services.AddAuthorization();
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.SaveToken = true;
+    options.RequireHttpsMetadata = false; 
+    options.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+            builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT key not found in configuration.")
+        ))
+    };
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy", policy =>
+        policy.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost")
+              .AllowAnyMethod().AllowAnyHeader().AllowCredentials());
+});
+
+builder.Services.AddScoped<IQuizRepository, QuizRepository>();
 
 var loggerConfiguration = new LoggerConfiguration()
     .MinimumLevel.Warning()
@@ -54,12 +82,16 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     DBInit.Seed(app);
-    app.MapOpenApi(); // Serve modern OpenAPI document endpoint (/openapi/v1.json)
-    app.MapScalarApiReference(); // Serve Scalar Interactive API Documentation UI (/scalar/v1)
+    app.MapOpenApi();
+    app.MapScalarApiReference();
 }
 
 app.UseCors("CorsPolicy");
 app.MapStaticAssets();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapControllers();
 
 app.Run();

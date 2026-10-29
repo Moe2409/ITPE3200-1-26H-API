@@ -1,4 +1,4 @@
-export interface IdentityUser {
+export interface AuthUser {
   id: string;
   userName?: string | null;
   email?: string | null;
@@ -16,7 +16,7 @@ export interface Question {
 
 export interface Quiz {
   id: number;
-  user?: IdentityUser | null;
+  user?: AuthUser | null;
   title?: string | null;
   questions: Question[];
 }
