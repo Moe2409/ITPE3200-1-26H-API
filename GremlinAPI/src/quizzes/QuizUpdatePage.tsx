@@ -2,27 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import QuizForm from './QuizForm';
 import { Quiz } from '../types/quiz';
-const API_URL = import.meta.env.VITE_API_URL;
-
-async function fetchQuiz(id: string): Promise<Quiz> {
-  const response = await fetch(`${API_URL}/api/quiz/${id}`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch Quiz');
-  }
-  return response.json();
-}
-
-async function updateQuiz(Quiz: Quiz): Promise<Quiz> {
-  const response = await fetch(`${API_URL}/api/quiz/${Quiz.id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(Quiz),
-  });
-  if (!response.ok) {
-    throw new Error(`Failed to update Quiz (status ${response.status})`);
-  }
-  return response.json();
-}
+import * as QuizService from './QuizService';
 
 export default function QuizUpdatePage() {
   const { id } = useParams<{ id: string }>();
@@ -31,12 +11,12 @@ export default function QuizUpdatePage() {
 
   const QuizQuery = useQuery({
     queryKey: ['Quizs', id],
-    queryFn: () => fetchQuiz(id!),
+    queryFn: () => QuizService.fetchQuizById(id!),
     enabled: !!id,
   });
 
   const mutation = useMutation({
-    mutationFn: updateQuiz,
+    mutationFn: QuizService.updateQuiz,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['Quizzes'] });
       navigate('/Quizzes');

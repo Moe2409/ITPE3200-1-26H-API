@@ -180,7 +180,7 @@ public class QuizAPIController : ControllerBase
         return StatusCode(500, "Internal server error");
     }
 
-    [HttpDelete("delete/{id}")]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
         bool success = await _quizRepository.Delete(id);
