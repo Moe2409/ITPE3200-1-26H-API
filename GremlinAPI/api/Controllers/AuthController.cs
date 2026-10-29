@@ -53,16 +53,16 @@ namespace Gremlin.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
-            var user = await _userManager.FindByEmailAsync(loginDto.Email);
+            var user = await _userManager.FindByNameAsync(loginDto.Username);
 
             if (user != null && await _userManager.CheckPasswordAsync(user, loginDto.Password))
             {
-                _logger.LogInformation("[AuthAPIController] user authorised for {@email}", loginDto.Email);
+                _logger.LogInformation("[AuthAPIController] user authorised for {@name}", loginDto.Username);
                 var token = GenerateJwtToken(user);
                 return Ok(new { Token = token });
             }
             
-            _logger.LogWarning("[AuthAPIController] user not authorised for {@email}", loginDto.Email);
+            _logger.LogWarning("[AuthAPIController] user not authorised for {@name}", loginDto.Username);
             return Unauthorized();
         }
 

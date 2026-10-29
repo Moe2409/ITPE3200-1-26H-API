@@ -5,6 +5,17 @@ export interface AuthUser {
   [key: string]: any; // Allows other ASP.NET Core identity fields if present
 }
 
+export interface User {
+    sub: string; // Subject (username)
+    email: string;
+    nameid: string; // User ID
+    jti: string;
+    iat: number;
+    exp: number;
+    iss: string;
+    aud:string;
+}
+
 export interface Question {
   id: number;
   quiz_id?: number | null;
