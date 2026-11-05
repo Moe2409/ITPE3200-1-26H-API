@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import QuizTable from './QuizTable';
 import { Quiz } from '../types/quiz';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../auth/AuthContext';
 import * as QuizService from './QuizService';
 
 export default function QuizListPage() {
@@ -25,6 +26,8 @@ export default function QuizListPage() {
       deleteMutation.mutate(id);
     }
   }
+  
+  const { user } = useAuth();
 
   return (
     <div>

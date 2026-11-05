@@ -55,12 +55,16 @@ return (
                                     </a>
                                 </td>
                                 <td className="text-center position-relative" style={{zIndex: '2'}}>
-                                    <Link to={`/quizupdate/${quiz.id}`}>Update</Link>
-                                    <Button 
-                                        onClick={() => onQuizDeleted(quiz.id)}
-                                        variant="link"
-                                        className="text-danger"
-                                    >Delete</Button>  
+                                    {onQuizDeleted && (
+                                        <>
+                                        <Link to={`/quizupdate/${quiz.id}`}>Update</Link>
+                                        <Button 
+                                            onClick={() => onQuizDeleted(quiz.id)}
+                                            variant="link"
+                                            className="text-danger"
+                                        >Delete</Button> 
+                                    </>
+                                    )}
                                 </td>
                             </tr>
                         ))}

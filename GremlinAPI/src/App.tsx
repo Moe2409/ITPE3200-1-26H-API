@@ -10,6 +10,8 @@ import QuizUpdatePage from './quizzes/QuizUpdatePage'
 import ProfilePage from './auth/ProfilePage'
 import LoginPage from './auth/LoginPage'
 import NavMenu from './shared/NavMenu'
+import RegisterPage from './auth/RegisterPage'
+import ProtectedRoute from './auth/ProtectedRoute'
 import './App.css'
 
 const queryClient = new QueryClient()
@@ -25,11 +27,16 @@ export default function App() {
             <NavMenu />
             <Routes>
               <Route path="/" element={<HomePage />} />
-              <Route path="/items" element={<QuizListPage />} />
-              <Route path="/quizcreate" element={<QuizCreatePage />} />
-              <Route path="/quizupdate/:id" element={<QuizUpdatePage />} />
+              <Route path="/quizzes" element={<QuizListPage />} />  
               <Route path="/profile" element={<ProfilePage currentUsername={currentUsername} />} />
               <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+
+              <Route element={<ProtectedRoute />}>
+                <Route path="/quizcreate" element={<QuizCreatePage />} />
+                <Route path="/quizupdate/:id" element={<QuizUpdatePage />} />
+              </Route>
+
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Container>

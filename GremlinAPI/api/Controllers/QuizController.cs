@@ -31,7 +31,7 @@ public class QuizAPIController : ControllerBase
         _userManager = userManager;
         _quizRepository = quizRepository;
     }
-   [Authorize]
+    
    [HttpGet("all")]
     public async Task<IActionResult> QuizList()
     {
@@ -86,7 +86,8 @@ public class QuizAPIController : ControllerBase
 
         return Ok(quizDto);
     }
-    [Authorize]  
+
+    [Authorize]
     [HttpPost("create")]
     public async Task<IActionResult> Create ([FromBody] Gremlin.DTOs.Quiz quizDto)
     {
@@ -116,6 +117,7 @@ public class QuizAPIController : ControllerBase
         _logger.LogWarning("[QuizApiController] Quiz creation failed {@item}", newQuiz);
         return StatusCode(500, "Internal server error");
     }
+
     [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, [FromBody] Gremlin.DTOs.Quiz quizDto)
@@ -179,6 +181,7 @@ public class QuizAPIController : ControllerBase
         _logger.LogWarning("[QuizAPIController] Quiz update failed for ID {Id}", id);
         return StatusCode(500, "Internal server error");
     }
+
     [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)

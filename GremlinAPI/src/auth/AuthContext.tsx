@@ -1,6 +1,6 @@
 import { createContext, useState, useContext, useEffect, useCallback, ReactNode } from 'react';
 import { jwtDecode } from 'jwt-decode';
-import { User } from '../types/quiz';
+import { User } from '../types/user';
 import { LoginDto } from '../types/auth';
 import * as authService from './AuthService';
 

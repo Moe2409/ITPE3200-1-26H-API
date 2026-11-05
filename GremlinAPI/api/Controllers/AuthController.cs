@@ -11,7 +11,7 @@ using System.Text;
 namespace Gremlin.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     public class AuthController : ControllerBase // ControllerBase is sufficient for API controllers
     {
         private readonly UserManager<AuthUser> _userManager;
@@ -43,7 +43,9 @@ namespace Gremlin.Controllers
             if (result.Succeeded)
             {
                 _logger.LogInformation("[AuthAPIController] user registered for {@username}", registerDto.Username);
-                return Ok(new { Message = "User registered successfully" });
+                // return Ok(new { Message = "User registered successfully" });
+                var token = GenerateJwtToken(user);
+                return Ok(new { Token = token, Message = "User registered and logged in successfully" });
             }
 
             _logger.LogWarning("[AuthAPIController] user registration failed for {@username}", registerDto.Username);
