@@ -21,12 +21,16 @@ async function handleResponse<T>(response: Response): Promise<T> {
 }
 
 export async function fetchQuizzes(): Promise<Quiz[]> {
- const response = await fetch(`${API_URL}/api/quiz/all`);
+ const response = await fetch(`${API_URL}/api/quiz/all`, {
+  headers: getAuthHeaders(),
+ });
  return handleResponse<Quiz[]>(response);
 }
 
 export async function fetchQuizById(id: string): Promise<Quiz> {
-  const response = await fetch(`${API_URL}/api/quiz/${id}`);
+  const response = await fetch(`${API_URL}/api/quiz/${id}`, {
+    headers: getAuthHeaders(),
+  });
   return handleResponse<Quiz>(response);
 }
 

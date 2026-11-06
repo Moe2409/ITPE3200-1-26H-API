@@ -7,6 +7,7 @@ import HomePage from './home/HomePage'
 import QuizListPage from './quizzes/QuizListPage'
 import QuizCreatePage from './quizzes/QuizCreatePage'
 import QuizUpdatePage from './quizzes/QuizUpdatePage'
+import TakeQuizPage from './quizzes/TakeQuizPage';
 import ProfilePage from './auth/ProfilePage'
 import LoginPage from './auth/LoginPage'
 import NavMenu from './shared/NavMenu'
@@ -33,6 +34,7 @@ export default function App() {
               <Route path="/register" element={<RegisterPage />} />
 
               <Route element={<ProtectedRoute />}>
+                <Route path='/quiz/take/:id' element={<TakeQuizPage />} />
                 <Route path="/quizcreate" element={<QuizCreatePage />} />
                 <Route path="/quizupdate/:id" element={<QuizUpdatePage />} />
               </Route>
