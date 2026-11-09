@@ -91,7 +91,8 @@ namespace Gremlin.Controllers
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName!), // Subject of the token
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id), // Subject of the token
+                new Claim(JwtRegisteredClaimNames.Name, user.UserName!), // User's name
                 new Claim(JwtRegisteredClaimNames.Email, user.Email!), // User's email
                 new Claim(ClaimTypes.NameIdentifier, user.Id), // Unique identifier for the user
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // Unique identifier for the token

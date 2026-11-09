@@ -62,3 +62,24 @@ export async function deleteQuiz(id: number): Promise<void> {
   }
 }
 
+export interface SubmitQuizPayload {
+  questions: {
+    questionId: number;
+    selectedAnswerIndices: number[];
+  }[];
+}
+
+export interface QuizSubmitResult {
+  message: string;
+  score: number;
+  maxPossibleScore: number;
+}
+
+export async function submitQuiz(id: number | string, payload: SubmitQuizPayload): Promise<QuizSubmitResult> {
+  const response = await fetch(`${API_URL}/api/quiz/${id}/submit`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(payload),
+  });
+  return handleResponse<QuizSubmitResult>(response);
+}

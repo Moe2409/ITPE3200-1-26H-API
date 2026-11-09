@@ -10,7 +10,7 @@ export default function AuthSection() {
             {user ? (
                 <Dropdown align="end">
                     <Dropdown.Toggle as={Nav.Link} id="dropdown-user">
-                        Welcome, {user.sub}
+                        Welcome, {user.name}
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
                         <Dropdown.Item onClick={logout}>Logout</Dropdown.Item>

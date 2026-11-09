@@ -1,7 +1,7 @@
 export interface User {
-    sub: string; // Subject (username)
+    sub: string; // Subject (User ID)
+    name: String;
     email: string;
-    nameid: string; // User ID
     jti: string;
     iat: number;
     exp: number;

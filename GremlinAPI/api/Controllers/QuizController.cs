@@ -5,6 +5,7 @@ using Gremlin.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 using Gremlin.DTOs;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -195,4 +196,59 @@ public class QuizAPIController : ControllerBase
 
         return NoContent();
     }
-}
+
+    [HttpPost("{id}/submit")]
+    [Authorize]
+    public async Task<IActionResult> SubmitQuiz(int id, [FromBody] SubmitQuizDto dto)
+    {
+        try
+        {
+            var quiz = await _gremlinDbContext.Quizzes
+                .Include(q => q.Questions)
+                .FirstOrDefaultAsync(q => q.id == id);
+
+            if (quiz == null) return NotFound("Quiz not found");
+
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            Console.WriteLine($"DEBUG: Saving history for User ID: '{userId}' and Quiz ID: {quiz.id}");
+
+            int score = 0;
+            int maxPossibleScore = quiz.Questions.Sum(q => q.CorrectAnswerIndices?.Count ?? 0);
+
+            foreach (var submittedQ in dto.Questions)
+            {
+                var databaseQ = quiz.Questions.FirstOrDefault(q => q.id == submittedQ.QuestionId);
+                if (databaseQ == null) continue;
+
+                var correctIndices = databaseQ.CorrectAnswerIndices ?? new List<int>();
+                
+                bool isCorrect = correctIndices.OrderBy(x => x)
+                                .SequenceEqual(submittedQ.SelectedAnswerIndices.OrderBy(x => x));
+
+                if (isCorrect)
+                {
+                    score++;
+                }
+            }
+
+                var historyEntry = new Gremlin.Models.History
+                {
+                    user_id = userId,
+                    quiz_id = quiz.id,
+                    completed_at = DateTime.UtcNow,
+                    score = score,
+                    maxPossibleScore = maxPossibleScore
+                };
+
+                _gremlinDbContext.Histories.Add(historyEntry);
+                await _gremlinDbContext.SaveChangesAsync();
+
+                return Ok(new { message = "Quiz submitted successfully!", score, maxPossibleScore });
+            }
+            catch (Exception ex)
+            {
+                // Return the exact error message to your frontend for debugging
+                return StatusCode(500, new { message = "Internal server error", error = ex.Message, details = ex.InnerException?.Message });
+            }
+        }
+        }
