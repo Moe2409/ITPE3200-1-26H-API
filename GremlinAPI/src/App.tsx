@@ -30,7 +30,7 @@ export default function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/quizzes" element={<QuizListPage />} />  
-              <Route path="/profile" element={<ProfilePage currentUsername={currentUsername} />} />
+              <Route path="/profile" element={<ProfilePage currentUserId={currentUsername} />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
 
