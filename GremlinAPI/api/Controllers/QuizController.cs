@@ -243,7 +243,11 @@ public class QuizAPIController : ControllerBase
                 _gremlinDbContext.Histories.Add(historyEntry);
                 await _gremlinDbContext.SaveChangesAsync();
 
-                return Ok(new { message = "Quiz submitted successfully!", score, maxPossibleScore });
+                return Ok(new 
+                    { 
+                        message = "Quiz submitted successfully!", 
+                        historyId = historyEntry.id 
+                    });
             }
             catch (Exception ex)
             {
@@ -251,4 +255,20 @@ public class QuizAPIController : ControllerBase
                 return StatusCode(500, new { message = "Internal server error", error = ex.Message, details = ex.InnerException?.Message });
             }
         }
-        }
+
+    [HttpGet("history/{id}")]
+    [Authorize]
+    public async Task<IActionResult> GetQuizResult(int id)
+    {
+        var history = await _gremlinDbContext.Histories
+            .Include(h => h.Quiz)
+            .ThenInclude(q => q.Questions)
+            .FirstOrDefaultAsync(h => h.id == id);
+
+        Console.WriteLine($"DEBUG: got history for  ID: '{id}' and element: {history}");
+        
+        if (history == null) return NotFound("Quiz result not found");
+        
+        return Ok(history);
+    }
+}

@@ -9,5 +9,12 @@ export default defineConfig({
   },
   server: {
     port: 4000, // Forces Vite to run on http://localhost:4000
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000', 
+        changeOrigin: true,
+        secure: false,
+      },
+    },
   },
 })

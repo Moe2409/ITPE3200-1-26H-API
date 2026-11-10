@@ -15,16 +15,20 @@ export default function TakeQuizPage() {
     enabled: !!id,
   });
 
-  const mutation = useMutation({
-    // Sender med både quiz.id og payload til submitQuiz i QuizService
-    mutationFn: (payload: { questions: { questionId: number; selectedAnswerIndices: number[] }[] }) => 
-      QuizService.submitQuiz(quizQuery.data!.id, payload),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['Quizzes'] });
-      console.log(data.message); // Viser evt. tilbakemelding fra backend
-      navigate('/Quizzes');
-    },
-  });
+const mutation = useMutation({
+  mutationFn: (payload: { questions: { questionId: number; selectedAnswerIndices: number[] }[] }) => {
+    console.log("Sender payload til API:", payload); 
+    return QuizService.submitQuiz(quizQuery.data!.id, payload);
+  },
+  onSuccess: (response: any) => {
+    console.log("Suksess! Responser fra server:", response);
+    queryClient.invalidateQueries({ queryKey: ['Quizzes'] });
+    navigate(`/quiz/result/${response.historyId}`);
+  },
+  onError: (error: any) => {
+    console.error("Feil ved innsending av quiz:", error); 
+  },
+});
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

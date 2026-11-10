@@ -7,7 +7,6 @@ public class History
     public string? user_id {get; set;}
     public int? quiz_id {get; set;}
     public DateTime? completed_at {get; set;}
-
     public int? score {get; set;}
     public int? maxPossibleScore {get; set;}
 

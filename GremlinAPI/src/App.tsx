@@ -14,6 +14,7 @@ import NavMenu from './shared/NavMenu'
 import RegisterPage from './auth/RegisterPage'
 import ProtectedRoute from './auth/ProtectedRoute'
 import './App.css'
+import QuizResultPage from './quizzes/QuizResultPage'
 
 const queryClient = new QueryClient()
 
@@ -37,6 +38,7 @@ export default function App() {
                 <Route path='/quiz/take/:id' element={<TakeQuizPage />} />
                 <Route path="/quizcreate" element={<QuizCreatePage />} />
                 <Route path="/quizupdate/:id" element={<QuizUpdatePage />} />
+                <Route path="/quiz/result/:id" element={<QuizResultPage />} />
               </Route>
 
               <Route path="*" element={<Navigate to="/" replace />} />

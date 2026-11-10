@@ -1,4 +1,5 @@
 import { Quiz } from "../types/quiz";
+import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -82,4 +83,17 @@ export async function submitQuiz(id: number | string, payload: SubmitQuizPayload
     body: JSON.stringify(payload),
   });
   return handleResponse<QuizSubmitResult>(response);
+}
+
+export async function fetchQuizResultById(id: string) {
+  const response = await fetch(`${API_URL}/api/quiz/history/${id}`, {
+    method: 'GET',
+    headers: getAuthHeaders(),
+  }); 
+  
+  if (!response.ok) {
+    throw new Error('Failed to fetch quiz results');
+  }
+  
+  return response.json();
 }
