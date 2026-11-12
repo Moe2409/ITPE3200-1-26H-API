@@ -32,7 +32,7 @@ export default function QuizListPage() {
   return (
     <div>
       <QuizTable quizzes={quizzes} onQuizDeleted={handleQuizDeleted} />
-      <Link to="/quizcreate" className="btn btn-secondary mt-3">Add New Quiz</Link>
+      <Link to="/quiz/create" className="btn btn-secondary mt-3">Add New Quiz</Link>
     </div>
   );
   

@@ -96,10 +96,12 @@ public class QuizAPIController : ControllerBase
         {
             return BadRequest("Quiz cannot be null");
         }
+        var user = await _userManager.GetUserAsync(User);
+
         var newQuiz = new Gremlin.Models.Quiz
         {
             title = quizDto.title, 
-            User = quizDto.user,
+            user_id = user.Id,
             Questions = quizDto.Questions.Select(q => new Gremlin.Models.Question
                 {
                     id = q.id,
@@ -256,6 +258,7 @@ public class QuizAPIController : ControllerBase
             }
         }
 
+// Get results for a specified quiz
     [HttpGet("history/{id}")]
     [Authorize]
     public async Task<IActionResult> GetQuizResult(int id)
@@ -268,6 +271,23 @@ public class QuizAPIController : ControllerBase
         Console.WriteLine($"DEBUG: got history for  ID: '{id}' and element: {history}");
         
         if (history == null) return NotFound("Quiz result not found");
+        
+        return Ok(history);
+    }
+
+// Get results for a specified user
+    [HttpGet("history/user/{id}")]
+    [Authorize]
+    public async Task<IActionResult> GetHistoryForUser(string id)
+    {
+        var history = await _gremlinDbContext.Histories
+        .Where(h => h.user_id == id)
+        .Include(h => h.Quiz)
+        .ToListAsync();
+
+        Console.WriteLine($"DEBUG: got history for  user ID: '{id}' and element: {history}");
+        
+        if (history == null) return NotFound("History not found");
         
         return Ok(history);
     }

@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import Container from 'react-bootstrap/Container'
-import { AuthProvider } from './auth/AuthContext' // 1. Import your AuthProvider
+import { AuthProvider } from './auth/AuthContext'
 import HomePage from './home/HomePage'
 import QuizListPage from './quizzes/QuizListPage'
 import QuizCreatePage from './quizzes/QuizCreatePage'
@@ -23,21 +23,20 @@ export default function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider> {/* 2. Wrap everything in AuthProvider */}
-        <Router> {/* 3. Wrap Router around NavMenu and Routes so router hooks work everywhere */}
+      <AuthProvider> {/*Wrap everything in AuthProvider */}
+        <Router>
           <Container>
             <NavMenu />
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/quizzes" element={<QuizListPage />} />  
-              <Route path="/profile" element={<ProfilePage currentUserId={currentUsername} />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
-
               <Route element={<ProtectedRoute />}>
+                <Route path="/profile" element={<ProfilePage />} />
                 <Route path='/quiz/take/:id' element={<TakeQuizPage />} />
-                <Route path="/quizcreate" element={<QuizCreatePage />} />
-                <Route path="/quizupdate/:id" element={<QuizUpdatePage />} />
+                <Route path="/quiz/create" element={<QuizCreatePage />} />
+                <Route path="/quiz/update/:id" element={<QuizUpdatePage />} />
                 <Route path="/quiz/result/:id" element={<QuizResultPage />} />
               </Route>
 

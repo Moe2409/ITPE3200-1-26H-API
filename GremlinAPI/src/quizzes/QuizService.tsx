@@ -97,3 +97,18 @@ export async function fetchQuizResultById(id: string) {
   
   return response.json();
 }
+
+export const fetchUserHistory = async (userId: string | number) => {
+    const response = await fetch(`${API_URL}/api/quiz/history/user/${userId}`, {
+        method: 'GET',
+        headers: getAuthHeaders(),
+    });
+
+    if (!response.ok) {
+        if (response.status === 404) return [];
+        const errorData = await response.json().catch(() => null);
+        throw new Error(errorData?.title || errorData?.message || 'Failed to fetch quiz history');
+    }
+
+    return response.json();
+};
