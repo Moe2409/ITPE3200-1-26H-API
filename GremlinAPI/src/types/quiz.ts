@@ -9,7 +9,6 @@ export interface AuthUser {
 export interface Question {
   id: number;
   quiz_id?: number | null;
-  type_id?: number | null;
   title?: string | null;
   answerAlternatives: string[];
   correctAnswerIndices: number[];

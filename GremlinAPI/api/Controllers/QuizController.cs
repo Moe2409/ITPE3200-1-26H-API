@@ -78,7 +78,6 @@ public class QuizAPIController : ControllerBase
             {
                 id = q.id,
                 quiz_id = q.quiz_id,
-                type_id = q.type_id,
                 title = q.title,
                 AnswerAlternatives = q.AnswerAlternatives,
                 CorrectAnswerIndices = q.CorrectAnswerIndices
@@ -106,7 +105,6 @@ public class QuizAPIController : ControllerBase
                 {
                     id = q.id,
                     quiz_id = q.quiz_id,
-                    type_id = q.type_id,
                     title = q.title,
 
                     AnswerAlternatives = new List<string>(q.AnswerAlternatives),
@@ -155,7 +153,6 @@ public class QuizAPIController : ControllerBase
             if (existingQuestion != null)
             {
                 // Update properties of the already-tracked question in-place
-                existingQuestion.type_id = qDto.type_id;
                 existingQuestion.title = qDto.title;
                 existingQuestion.AnswerAlternatives = new List<string>(qDto.AnswerAlternatives);
                 existingQuestion.CorrectAnswerIndices = new List<int>(qDto.CorrectAnswerIndices);
@@ -166,7 +163,6 @@ public class QuizAPIController : ControllerBase
                 existingQuiz.Questions.Add(new Gremlin.Models.Question
                 {
                     quiz_id = id,
-                    type_id = qDto.type_id,
                     title = qDto.title,
                     AnswerAlternatives = new List<string>(qDto.AnswerAlternatives),
                     CorrectAnswerIndices = new List<int>(qDto.CorrectAnswerIndices)
@@ -203,7 +199,7 @@ public class QuizAPIController : ControllerBase
     [Authorize]
     public async Task<IActionResult> SubmitQuiz(int id, [FromBody] SubmitQuizDto dto)
     {
-        try
+        try 
         {
             var quiz = await _gremlinDbContext.Quizzes
                 .Include(q => q.Questions)
@@ -225,7 +221,7 @@ public class QuizAPIController : ControllerBase
                 var correctIndices = databaseQ.CorrectAnswerIndices ?? new List<int>();
                 
                 bool isCorrect = correctIndices.OrderBy(x => x)
-                                .SequenceEqual(submittedQ.SelectedAnswerIndices.OrderBy(x => x));
+                    .SequenceEqual(submittedQ.SelectedAnswerIndices.OrderBy(x => x));
 
                 if (isCorrect)
                 {
@@ -233,30 +229,54 @@ public class QuizAPIController : ControllerBase
                 }
             }
 
-                var historyEntry = new Gremlin.Models.History
-                {
-                    user_id = userId,
-                    quiz_id = quiz.id,
-                    completed_at = DateTime.UtcNow,
-                    score = score,
-                    maxPossibleScore = maxPossibleScore
-                };
-
-                _gremlinDbContext.Histories.Add(historyEntry);
-                await _gremlinDbContext.SaveChangesAsync();
-
-                return Ok(new 
-                    { 
-                        message = "Quiz submitted successfully!", 
-                        historyId = historyEntry.id 
-                    });
-            }
-            catch (Exception ex)
+            var historyEntry = new Gremlin.Models.History
             {
-                // Return the exact error message to your frontend for debugging
-                return StatusCode(500, new { message = "Internal server error", error = ex.Message, details = ex.InnerException?.Message });
+                user_id = userId,
+                quiz_id = quiz.id,
+                quiz_title = quiz.title,
+                completed_at = DateTime.UtcNow,
+                score = score,
+                maxPossibleScore = maxPossibleScore
+            };
+
+            _gremlinDbContext.Histories.Add(historyEntry);
+            await _gremlinDbContext.SaveChangesAsync();
+
+            foreach (var submittedQ in dto.Questions)
+            {
+                var dbQuestion = quiz.Questions.FirstOrDefault(q => q.id == submittedQ.QuestionId);
+
+                if (dbQuestion != null)
+                {
+                    var historyAnswer = new Gremlin.Models.HistoryAnswer
+                    {
+                        history_id = historyEntry.id,
+                        title = dbQuestion.title, // Adjust property name if your Question entity uses 'Text' or similar
+                        AnswerAlternatives = dbQuestion.AnswerAlternatives ?? new List<string>(),
+                        AnswerIndices = submittedQ.SelectedAnswerIndices ?? new List<int>(),
+                        CorrectAnswerIndices = dbQuestion.CorrectAnswerIndices ?? new List<int>()
+                    };
+
+                    _gremlinDbContext.historyAnswers.Add(historyAnswer);
+                }
             }
+
+            // Persist the history answers
+            await _gremlinDbContext.SaveChangesAsync();
+
+
+            return Ok(new 
+                { 
+                    message = "Quiz submitted successfully!", 
+                    historyId = historyEntry.id 
+                });
         }
+        catch (Exception ex)
+        {
+            // Return the exact error message to your frontend for debugging
+            return StatusCode(500, new { message = "Internal server error", error = ex.Message, details = ex.InnerException?.Message });
+        }
+    }
 
 // Get results for a specified quiz
     [HttpGet("history/{id}")]
@@ -266,6 +286,7 @@ public class QuizAPIController : ControllerBase
         var history = await _gremlinDbContext.Histories
             .Include(h => h.Quiz)
             .ThenInclude(q => q.Questions)
+            .Include(h => h.HistoryAnswers)
             .FirstOrDefaultAsync(h => h.id == id);
 
         Console.WriteLine($"DEBUG: got history for  ID: '{id}' and element: {history}");
@@ -283,6 +304,7 @@ public class QuizAPIController : ControllerBase
         var history = await _gremlinDbContext.Histories
         .Where(h => h.user_id == id)
         .Include(h => h.Quiz)
+        .Include(h => h.HistoryAnswers)
         .ToListAsync();
 
         Console.WriteLine($"DEBUG: got history for  user ID: '{id}' and element: {history}");

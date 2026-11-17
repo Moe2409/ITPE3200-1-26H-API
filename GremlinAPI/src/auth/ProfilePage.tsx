@@ -181,7 +181,7 @@ export default function ProfilePage() {
                   return (
                     <tr key={historyItem.id || index}>
                       <td className="ps-4 py-3 fw-semibold text-dark">
-                        {historyItem.quiz?.title || `Quiz #${historyItem.quizId}`}
+                        {historyItem.quiz_title || `Quiz #${historyItem.quizId}`}
                       </td>
                       <td className="py-3">
                         <span className="fw-bold">{score}</span>
